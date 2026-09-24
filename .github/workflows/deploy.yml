@@ -8,10 +8,10 @@
 #
 #   template: Marketplace-Studio-Dev/ci-templates
 #   workflow: .github/workflows/deploy-cloudflare.yml
-#   pinned:   4ebb066e0d32851c6d60c099de77b6f892630511 (first release)
+#   pinned:   9dd15a68db62af1d8a5bf4220e2347dbc2349420 (explicit-secrets branch, unreleased)
 #   project:  deploy-testbed
 #
-# `secrets: inherit` passes THIS repository's secrets, never the template's.
+# The secrets passed below come from THIS repository, never the template's.
 # Each GitHub Environment used below must hold:
 #   CLOUDFLARE_API_TOKEN
 #   CLOUDFLARE_ACCOUNT_ID
@@ -26,7 +26,7 @@ on:
 jobs:
   staging:
     if: github.event_name == 'push'
-    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@4ebb066e0d32851c6d60c099de77b6f892630511
+    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@9dd15a68db62af1d8a5bf4220e2347dbc2349420
     with:
       environment: staging
       node_version: '22'
@@ -35,11 +35,13 @@ jobs:
       migrate_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "migrate staging: secrets present, as expected"'
       deploy_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "deploy staging: secrets present, as expected"'
       smoke_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "smoke staging: no secrets, as expected"'
-    secrets: inherit
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   production:
     if: github.event_name == 'workflow_dispatch'
-    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@4ebb066e0d32851c6d60c099de77b6f892630511
+    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@9dd15a68db62af1d8a5bf4220e2347dbc2349420
     with:
       environment: production
       node_version: '22'
@@ -48,4 +50,6 @@ jobs:
       migrate_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "migrate production: secrets present, as expected"'
       deploy_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "deploy production: secrets present, as expected"'
       smoke_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "smoke production: no secrets, as expected"'
-    secrets: inherit
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
