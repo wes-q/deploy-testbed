@@ -32,9 +32,8 @@ jobs:
       node_version: '22'
       package_manager: pnpm
       setup_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "setup: no secrets, as expected"'
-      migrate_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "migrate staging: secrets present, as expected"'
-      deploy_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "deploy staging: secrets present, as expected"'
-      smoke_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "smoke staging: no secrets, as expected"'
+      deploy_command: 'pnpm exec wrangler deploy --env staging --var COMMIT:$GITHUB_SHA | tee deploy.log'
+      smoke_command: 'url=$(grep -oE ''https://[a-z0-9.-]+\.workers\.dev'' deploy.log | head -n1) && test -n "$url" && for i in 1 2 3 4 5 6 7 8; do curl -fsS "$url" | grep -q "$GITHUB_SHA" && { echo "$url serves $GITHUB_SHA"; exit 0; }; sleep 5; done; echo "$url is not serving $GITHUB_SHA"; exit 1'
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -47,9 +46,8 @@ jobs:
       node_version: '22'
       package_manager: pnpm
       setup_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "setup: no secrets, as expected"'
-      migrate_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "migrate production: secrets present, as expected"'
-      deploy_command: 'test -n "$CLOUDFLARE_API_TOKEN" && echo "deploy production: secrets present, as expected"'
-      smoke_command: 'test -z "${CLOUDFLARE_API_TOKEN:-}" && echo "smoke production: no secrets, as expected"'
+      deploy_command: 'pnpm exec wrangler deploy --env production --var COMMIT:$GITHUB_SHA | tee deploy.log'
+      smoke_command: 'url=$(grep -oE ''https://[a-z0-9.-]+\.workers\.dev'' deploy.log | head -n1) && test -n "$url" && for i in 1 2 3 4 5 6 7 8; do curl -fsS "$url" | grep -q "$GITHUB_SHA" && { echo "$url serves $GITHUB_SHA"; exit 0; }; sleep 5; done; echo "$url is not serving $GITHUB_SHA"; exit 1'
     secrets:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
