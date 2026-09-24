@@ -8,7 +8,7 @@
 #
 #   template: Marketplace-Studio-Dev/ci-templates
 #   workflow: .github/workflows/deploy-cloudflare.yml
-#   pinned:   9dd15a68db62af1d8a5bf4220e2347dbc2349420 (explicit-secrets branch, unreleased)
+#   pinned:   d0b66be62f957e6d604fd1ee7ea21c58141a0511 (secrets by name)
 #   project:  deploy-testbed
 #
 # The secrets passed below come from THIS repository, never the template's.
@@ -26,7 +26,7 @@ on:
 jobs:
   staging:
     if: github.event_name == 'push'
-    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@9dd15a68db62af1d8a5bf4220e2347dbc2349420
+    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@d0b66be62f957e6d604fd1ee7ea21c58141a0511
     with:
       environment: staging
       node_version: '22'
@@ -41,7 +41,7 @@ jobs:
 
   production:
     if: github.event_name == 'workflow_dispatch'
-    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@9dd15a68db62af1d8a5bf4220e2347dbc2349420
+    uses: Marketplace-Studio-Dev/ci-templates/.github/workflows/deploy-cloudflare.yml@d0b66be62f957e6d604fd1ee7ea21c58141a0511
     with:
       environment: production
       node_version: '22'
