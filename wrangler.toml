@@ -1,0 +1,16 @@
+# The account comes from CLOUDFLARE_ACCOUNT_ID, never from this file, so the
+# same config deploys wherever the secrets point. COMMIT is set at deploy time
+# with --var.
+name = "deploy-testbed"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+workers_dev = true
+send_metrics = false
+
+[env.staging]
+name = "deploy-testbed-staging"
+vars = { ENVIRONMENT = "staging" }
+
+[env.production]
+name = "deploy-testbed-production"
+vars = { ENVIRONMENT = "production" }
